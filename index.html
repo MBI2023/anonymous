@@ -137,6 +137,51 @@
             display: inline-block;
             margin: 0 10px;
         }
+
+        .hacking-animation {
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            background: black;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .hacking-text {
+            overflow: hidden;
+            border-right: .15em solid #00ff00;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end),
+                       blink-caret .75s step-end infinite;
+        }
+
+        .just-kidding {
+            color: #ff6b6b;
+            font-size: 1.5em;
+            margin: 20px 0;
+            animation: bounce 1s ease infinite;
+            display: none;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff00; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
@@ -146,7 +191,7 @@
             <div class="emoji">🎉</div>
             <h1>Happy Birthday, Aini!</h1>
             <div class="emoji">🎉</div>
-            <button class="button" onclick="showStage(2)">Please press here for your surprise</button>
+            <button class="button" onclick="showStage(2)">Please Click here for your surprise</button>
         </div>
 
         <div id="stage2" class="stage">
@@ -157,17 +202,21 @@
         </div>
 
         <div id="stage3" class="stage">
-            <div class="emoji">🎉</div>
-            <h1>Happy Birthday, Aini!</h1>
-            <div class="emoji">🎉</div>
-            <div class="message">
-                <div class="balloon-message">
-                    "Hey Aini! 🌟 Just wanted to pop in and say... may your day be filled with endless joy, countless smiles, and all the success you deserve! Keep being the amazing person you are! 🎈✨"
-                    <div class="balloon-signature">- Mr. Anonymous 🎭</div>
+            <div class="hacking-animation"></div>
+            <div class="just-kidding">WAIT... I'M JUST KIDDING! 😈</div>
+            <div class="birthday-content">
+                <div class="emoji">🎉</div>
+                <h1>Happy Birthday, Aini!</h1>
+                <div class="emoji">🎉</div>
+                <div class="message">
+                    <div class="balloon-message">
+                        "Hey Aini! 🌟 Just wanted to pop in and say... may your day be filled with endless joy, countless smiles, and all the success you deserve! Keep being the amazing person you are! 🎈✨"
+                        <div class="balloon-signature">- Mr. Anonymous 🎭</div>
+                    </div>
+                    Wishing you the most amazing 24th birthday ever! You're such an incredible person to work with, and your energy makes everything better. Here's to another year of smashing goals, making memories, and having all the laughs along the way!<br><br>
+                    Now, do me a favor and <strong>KEEP THAT SMILE ON YOUR F***ING FACE</strong>, because you're awesome, and the world is better with your happiness lighting it up! 🌟<br><br>
+                    Cheers to you, Aini! 🥂 Let's make it a great one. 💃
                 </div>
-                Wishing you the most amazing 24th birthday ever! You're such an incredible person to work with, and your energy makes everything better. Here's to another year of smashing goals, making memories, and having all the laughs along the way!<br><br>
-                Now, do me a favor and <strong>KEEP THAT SMILE ON YOUR F***ING FACE</strong>, because you're awesome, and the world is better with your happiness lighting it up! 🌟<br><br>
-                Cheers to you, Aini! 🥂 Let's make it a great one. 💃
             </div>
         </div>
     </div>
@@ -181,37 +230,90 @@
             document.getElementById('stage' + stageNum).classList.add('active');
 
             if (stageNum === 3) {
-                // Play birthday song
-                const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
-                audio.play();
+                // Show hacking animation first
+                const hackingAnimation = document.querySelector('.hacking-animation');
+                const justKidding = document.querySelector('.just-kidding');
+                const birthdayContent = document.querySelector('.birthday-content');
+                
+                hackingAnimation.style.display = 'block';
+                birthdayContent.style.display = 'none';
+                
+                let code = '';
+                const codeLines = [
+                    'INITIALIZING HACK SEQUENCE...',
+                    'ACCESSING MAINFRAME...',
+                    'BYPASSING SECURITY...',
+                    'DOWNLOADING USER DATA...',
+                    'ACCESSING BIRTHDAY PROTOCOLS...',
+                    'EXECUTING ORDER 66...',
+                    'SYSTEM COMPROMISED!'
+                ];
+                
+                let lineIndex = 0;
+                let charIndex = 0;
+                
+                const typeCode = () => {
+                    if (lineIndex < codeLines.length) {
+                        if (charIndex < codeLines[lineIndex].length) {
+                            code += codeLines[lineIndex][charIndex];
+                            hackingAnimation.textContent = code + '_';
+                            charIndex++;
+                            setTimeout(typeCode, 50);
+                        } else {
+                            code += '\n';
+                            charIndex = 0;
+                            lineIndex++;
+                            setTimeout(typeCode, 300);
+                        }
+                    } else {
+                        setTimeout(() => {
+                            justKidding.style.display = 'block';
+                            setTimeout(() => {
+                                hackingAnimation.style.display = 'none';
+                                justKidding.style.display = 'none';
+                                birthdayContent.style.display = 'block';
+                                
+                                // Play birthday song
+                                const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+                                audio.play();
 
-                // Launch confetti
-                const duration = 15 * 1000;
-                const animationEnd = Date.now() + duration;
-                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+                                // Launch confetti
+                                launchConfetti();
+                            }, 2000);
+                        }, 1000);
+                    }
+                };
+                
+                typeCode();
+            }
+        }
 
-                function randomInRange(min, max) {
-                    return Math.random() * (max - min) + min;
+        function launchConfetti() {
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
                 }
 
-                const interval = setInterval(function() {
-                    const timeLeft = animationEnd - Date.now();
-
-                    if (timeLeft <= 0) {
-                        return clearInterval(interval);
-                    }
-
-                    const particleCount = 50 * (timeLeft / duration);
-                    confetti(Object.assign({}, defaults, {
-                        particleCount,
-                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-                    }));
-                    confetti(Object.assign({}, defaults, {
-                        particleCount,
-                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-                    }));
-                }, 250);
-            }
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                }));
+            }, 250);
         }
     </script>
 </body>
