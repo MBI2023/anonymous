@@ -33,12 +33,13 @@
             animation: fadeIn 3s ease-in-out;
         }
 
-        .animated-picture {
+        .static-picture {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            animation: float 6s infinite ease-in-out;
+            width: 300px;
+            height: auto;
         }
 
         .contact {
@@ -60,15 +61,6 @@
                 opacity: 1;
             }
         }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translate(-50%, 0);
-            }
-            50% {
-                transform: translate(-50%, -20px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -80,9 +72,6 @@
             <div class="contact">Email: <a href="mailto:mazed2023@proton.me">mazed2023@proton.me</a></div>
         </div>
     </div>
-    <img class="animated-picture" src="experience-the-lively-and-cheerful-beauty-of-and-fa21633-032" alt="Animated Placeholder Picture">
-<img src="nnnnnn.png" alt="Italian Trulli">
-
+    <img class="static-picture" src="nnnnnn.png" alt="Maintenance Placeholder">
 </body>
 </html>
-
