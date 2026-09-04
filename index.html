@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>private_message.exe // Lisa</title>
+  <meta name="theme-color" content="#090d16" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #e9f3f0;
+      --muted: #8b9c9b;
+      --faint: rgba(183, 223, 216, .12);
+      --cyan: #65e6d2;
+      --pink: #ff718a;
+      --violet: #a783ff;
+      --night: #090d16;
+      --panel: rgba(12, 20, 30, .82);
+      --rose-glow: rgba(255, 113, 138, .18);
+      --mono: 'DM Mono', 'Courier New', monospace;
+      --sans: 'Space Grotesk', 'Segoe UI', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--night);
+      font-family: var(--sans);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .34;
+      background-image: linear-gradient(rgba(101, 230, 210, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(101, 230, 210, .045) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 78% 14%, rgba(101, 230, 210, .12), transparent 28%), radial-gradient(circle at 12% 90%, rgba(167, 131, 255, .12), transparent 26%), radial-gradient(circle at 50% 52%, var(--rose-glow), transparent 42%);
+    }
+
+    .flower-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .flower { position: absolute; bottom: -9vh; left: var(--x); color: var(--color); font-size: var(--size); line-height: 1; opacity: 0; filter: drop-shadow(0 0 12px currentColor); animation: flower-flight var(--duration) linear var(--delay) infinite; }
+    .sticker-dock { position: fixed; right: clamp(18px, 5vw, 68px); bottom: 8vh; z-index: 2; display: grid; gap: 11px; pointer-events: none; }
+    .sticker { display: grid; place-items: center; width: 64px; height: 64px; border: 1px solid rgba(255, 255, 255, .24); border-radius: 20px 20px 20px 7px; background: linear-gradient(145deg, rgba(255, 135, 162, .24), rgba(167, 131, 255, .16)); box-shadow: 0 15px 35px rgba(0, 0, 0, .22), 0 0 26px rgba(255, 113, 138, .13); font-size: 32px; transform: rotate(var(--tilt)); animation: sticker-float 4.8s ease-in-out var(--delay) infinite; }
+    .sticker:nth-child(2) { border-radius: 20px 20px 7px 20px; background: linear-gradient(145deg, rgba(101, 230, 210, .18), rgba(167, 131, 255, .17)); }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 34px));
+      min-height: 100vh;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 0 34px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px 22px;
+      color: var(--muted);
+      font: 11px var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+    .brand-mark { color: var(--pink); font-size: 16px; text-shadow: 0 0 18px rgba(255, 113, 138, .9); }
+    .connection { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); animation: breathe 2s ease-in-out infinite; }
+
+    .terminal {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 670px;
+      border: 1px solid rgba(150, 202, 197, .28);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(17, 28, 39, .88), rgba(9, 14, 24, .94));
+      box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(101, 230, 210, .035) inset;
+      overflow: hidden;
+    }
+
+    .terminal::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.025) 45%, transparent 70%); transform: translateX(-100%); animation: sweep 11s ease-in-out infinite; }
+    .terminal-head { display: flex; align-items: center; gap: 9px; height: 48px; padding: 0 18px; border-bottom: 1px solid var(--faint); background: rgba(8, 13, 22, .45); }
+    .window-dot { width: 8px; height: 8px; border-radius: 50%; background: #465457; }
+    .window-dot:first-child { background: var(--pink); }
+    .window-dot:nth-child(2) { background: #e8bc68; }
+    .window-dot:nth-child(3) { background: var(--cyan); }
+    .terminal-title { margin-left: 8px; color: #718887; font: 11px var(--mono); }
+
+    .screen { position: relative; z-index: 1; display: flex; flex: 1; align-items: center; justify-content: center; padding: 62px 8vw 74px; }
+    .scene { width: min(740px, 100%); animation: scene-in .72s cubic-bezier(.2,.9,.3,1) both; }
+    .scene.is-leaving { animation: scene-out .28s ease both; }
+    .scene-kicker { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; color: var(--cyan); font: 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .scene-kicker::before { content: ''; width: 28px; height: 1px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    .prompt { color: var(--pink); font-family: var(--mono); }
+    h1, h2 { max-width: 700px; margin: 0; letter-spacing: -.045em; line-height: 1.02; font-weight: 600; }
+    h1 { font-size: clamp(42px, 7vw, 78px); }
+    h2 { font-size: clamp(38px, 6vw, 70px); }
+    .type-cursor::after { content: '_'; color: var(--cyan); animation: blink 1s steps(1) infinite; }
+    .subline { max-width: 540px; margin: 25px 0 0; color: var(--muted); font: 14px/1.7 var(--mono); }
+    .subline strong { color: var(--cyan); font-weight: 400; }
+    .actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 38px; }
+    button { appearance: none; border: 0; color: var(--ink); font: 600 14px var(--sans); cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease; }
+    button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+    .primary, .secondary { min-height: 49px; padding: 0 22px; }
+    .primary { background: var(--cyan); color: #07141a; box-shadow: 0 0 26px rgba(101, 230, 210, .17); }
+    .primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(101, 230, 210, .23); }
+    .secondary { border: 1px solid rgba(150, 202, 197, .28); background: rgba(255,255,255,.025); color: #a7b9b6; }
+    .secondary:hover { transform: translateY(-3px); border-color: var(--pink); color: var(--pink); }
+    .tiny-note { margin-top: 20px; color: #566b6b; font: 11px var(--mono); }
+    .tiny-note span { color: var(--pink); }
+
+    .letter { max-width: 720px; }
+    .letter h2 { margin-bottom: 25px; }
+    .letter-body { max-width: 670px; color: #b9c9c6; font: 15px/1.85 var(--mono); }
+    .letter-body p { margin: 0 0 16px; }
+    .letter-body .emphasis { color: var(--ink); }
+    .letter-body .question { color: var(--pink); font: 600 clamp(22px, 3.5vw, 33px)/1.3 var(--sans); letter-spacing: -.02em; margin: 25px 0 18px; }
+    .reply { color: var(--cyan); }
+
+    .footer { display: flex; align-items: center; justify-content: space-between; padding-top: 19px; color: #536565; font: 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .footer .heart { color: var(--pink); font-size: 14px; }
+    .progress { display: flex; gap: 7px; align-items: center; }
+    .progress i { display: block; width: 20px; height: 2px; background: #314340; }
+    .progress i.active { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+
+    .toast { position: fixed; left: 50%; bottom: 28px; z-index: 5; padding: 12px 17px; border: 1px solid rgba(101,230,210,.3); background: #111d25; color: var(--cyan); font: 12px var(--mono); box-shadow: 0 12px 35px rgba(0,0,0,.35); transform: translate(-50%, 25px); opacity: 0; pointer-events: none; transition: .3s ease; }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes breathe { 50% { opacity: .4; transform: scale(.7); } }
+    @keyframes sweep { 0%, 75%, 100% { transform: translateX(-100%); } 87% { transform: translateX(100%); } }
+    @keyframes scene-in { from { opacity: 0; transform: translateY(17px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scene-out { to { opacity: 0; transform: translateY(-15px); } }
+    @keyframes flower-flight { 0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg) scale(.75); } 12% { opacity: .85; } 50% { transform: translate3d(var(--drift), -56vh, 0) rotate(170deg) scale(1); } 88% { opacity: .8; } 100% { opacity: 0; transform: translate3d(calc(var(--drift) * -1), -120vh, 0) rotate(360deg) scale(.82); } }
+    @keyframes sticker-float { 0%, 100% { transform: translateY(0) rotate(var(--tilt)); } 50% { transform: translateY(-12px) rotate(calc(var(--tilt) * -1)); } }
+
+    @media (max-width: 600px) {
+      .app { width: min(100% - 22px, 1120px); padding-top: 18px; }
+      .topbar { padding-bottom: 15px; font-size: 9px; }
+      .connection { display: none; }
+      .terminal { min-height: calc(100vh - 85px); }
+      .sticker-dock { right: 14px; bottom: 22px; gap: 7px; }
+      .sticker { width: 47px; height: 47px; border-radius: 15px 15px 15px 5px; font-size: 23px; }
+      .terminal-head { height: 42px; padding: 0 13px; }
+      .screen { align-items: flex-start; padding: 52px 23px 54px; }
+      .scene-kicker { margin-bottom: 22px; }
+      h1 { font-size: clamp(38px, 12vw, 60px); }
+      h2 { font-size: clamp(35px, 11vw, 56px); }
+      .subline { font-size: 12px; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .actions button { width: 100%; }
+      .footer { padding: 0 4px 20px; }
+      .letter-body { font-size: 12px; line-height: 1.72; }
+    }
+  </style>
+</head>
+<body>
+  <div class="flower-field" aria-hidden="true">
+    <span class="flower" style="--x: 4%; --color: #ff9ab0; --size: 18px; --duration: 15s; --delay: -4s; --drift: 70px;">✿</span>
+    <span class="flower" style="--x: 11%; --color: #ffd0dc; --size: 25px; --duration: 19s; --delay: -12s; --drift: -85px;">✿</span>
+    <span class="flower" style="--x: 19%; --color: #bca4ff; --size: 13px; --duration: 17s; --delay: -8s; --drift: 115px;">✦</span>
+    <span class="flower" style="--x: 28%; --color: #ff718a; --size: 20px; --duration: 22s; --delay: -17s; --drift: -120px;">✿</span>
+    <span class="flower" style="--x: 37%; --color: #65e6d2; --size: 14px; --duration: 16s; --delay: -2s; --drift: 80px;">✦</span>
+    <span class="flower" style="--x: 46%; --color: #ffc1d0; --size: 23px; --duration: 20s; --delay: -10s; --drift: -70px;">✿</span>
+    <span class="flower" style="--x: 55%; --color: #a783ff; --size: 17px; --duration: 18s; --delay: -14s; --drift: 130px;">✦</span>
+    <span class="flower" style="--x: 64%; --color: #ff9ab0; --size: 21px; --duration: 21s; --delay: -6s; --drift: -95px;">✿</span>
+    <span class="flower" style="--x: 73%; --color: #65e6d2; --size: 13px; --duration: 15s; --delay: -11s; --drift: 60px;">✦</span>
+    <span class="flower" style="--x: 81%; --color: #ffd0dc; --size: 24px; --duration: 23s; --delay: -19s; --drift: -115px;">✿</span>
+    <span class="flower" style="--x: 91%; --color: #ff718a; --size: 16px; --duration: 18s; --delay: -3s; --drift: 90px;">✿</span>
+    <span class="flower" style="--x: 97%; --color: #bca4ff; --size: 12px; --duration: 14s; --delay: -9s; --drift: -55px;">✦</span>
+  </div>
+  <div class="sticker-dock" aria-hidden="true">
+    <div class="sticker" style="--tilt: -8deg; --delay: -.8s;">💋</div>
+    <div class="sticker" style="--tilt: 7deg; --delay: -2.2s;">🤗</div>
+    <div class="sticker" style="--tilt: -4deg; --delay: -3.5s;">🌷</div>
+  </div>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">♥</span> private_message.exe</div>
+      <div class="connection"><span class="status-dot"></span> encrypted connection / just us</div>
+    </header>
+
+    <section class="terminal" aria-live="polite">
+      <div class="terminal-head">
+        <span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>
+        <span class="terminal-title">lisa@my-heart: ~/important</span>
+      </div>
+      <div class="screen" id="screen"></div>
+      <div class="footer">
+        <span id="footerStatus">waiting for one very important answer</span>
+        <span class="progress" aria-label="Page 1 of 3"><i class="active"></i><i></i><i></i></span>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast">message received ✦</div>
+
+  <script>
+    const screen = document.getElementById('screen');
+    const footerStatus = document.getElementById('footerStatus');
+    const progress = document.querySelectorAll('.progress i');
+    const toast = document.getElementById('toast');
+    let currentPage = 1;
+
+    const scenes = {
+      one: `
+        <div class="scene">
+          <div class="scene-kicker"><span class="prompt">$</span> initiating confidential conversation</div>
+          <h1 class="type-cursor" data-type="Hi Lisa, can I ask you something?">&nbsp;</h1>
+          <p class="subline">I have successfully bypassed every firewall except the one around this question.<br><strong>Do you have a second?</strong></p>
+          <div class="actions">
+            <button class="primary" id="yesFirst">Yeah, sure ❤️</button>
+            <button class="secondary" id="noFirst">No</button>
+          </div>
+          <div class="tiny-note">request_id: <span>for-lisa-only</span> // awaiting response...</div>
+        </div>`,
+      two: `
+        <div class="scene">
+          <div class="scene-kicker"><span class="prompt">$</span> access granted / raising stakes</div>
+          <h2 class="type-cursor" data-type="Can we be more than friends?">&nbsp;</h2>
+          <p class="subline">This packet contains one honest thought, lightly encrypted with nerves.<br><strong>Decrypt when ready.</strong></p>
+          <div class="actions">
+            <button class="primary" id="thinking">Thinking... 🤔</button>
+          </div>
+          <div class="tiny-note">encryption: <span>honesty_256</span> // no take-backs</div>
+        </div>`,
+      three: `
+        <div class="scene letter">
+          <div class="scene-kicker"><span class="prompt">$</span> decrypted_message.txt</div>
+          <h2>Hi Lisa,</h2>
+          <div class="letter-body">
+            <p>I know you don’t really like dating someone older than you, and honestly, I never thought I would want to be with someone elder than me either.</p>
+            <p>But your childish behavior, your chill personality, and especially your smart mindset made me see you differently.</p>
+            <p>Somehow, I really enjoy being around you and talking to you.</p>
+            <p>So I have one simple question...</p>
+            <p class="question">Will you be my girlfriend? ❤️</p>
+            <p class="reply">I’m waiting for your reply.</p>
+          </div>
+          <div class="actions">
+            <button class="primary" id="yesFinal">Yes ❤️</button>
+            <button class="secondary" id="thinkFinal">Let me think 🤍</button>
+          </div>
+        </div>`
+    };
+
+    function typeText(element) {
+      const text = element.dataset.type;
+      element.textContent = '';
+      let index = 0;
+      const timer = setInterval(() => {
+        element.textContent += text[index++];
+        if (index >= text.length) clearInterval(timer);
+      }, 42);
+    }
+
+    function render(page, message) {
+      const oldScene = screen.querySelector('.scene');
+      if (oldScene) {
+        oldScene.classList.add('is-leaving');
+        setTimeout(() => showPage(page, message), 260);
+      } else showPage(page, message);
+    }
+
+    function showPage(page, message) {
+      currentPage = page;
+      screen.innerHTML = page === 1 ? scenes.one : page === 2 ? scenes.two : scenes.three;
+      const typed = screen.querySelector('[data-type]');
+      if (typed) setTimeout(() => typeText(typed), 300);
+      progress.forEach((bar, index) => bar.classList.toggle('active', index < page));
+      document.querySelector('.progress').setAttribute('aria-label', `Page ${page} of 3`);
+      footerStatus.textContent = page === 3 ? 'secure channel open / reply when ready' : 'waiting for one very important answer';
+      bindActions();
+      if (message) showToast(message);
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function bindActions() {
+      document.getElementById('yesFirst')?.addEventListener('click', () => render(2, 'okay. deep breath...'));
+      document.getElementById('thinking')?.addEventListener('click', () => render(3, 'decrypting the important part ✦'));
+      document.getElementById('noFirst')?.addEventListener('click', () => {
+        const button = document.getElementById('noFirst');
+        button.textContent = 'Okay... but I’ll still ask 🌷';
+        button.style.borderColor = 'var(--pink)';
+        showToast('that is a very suspicious “no”');
+      });
+      document.getElementById('yesFinal')?.addEventListener('click', () => {
+        render(3);
+        setTimeout(() => {
+          const letter = screen.querySelector('.letter');
+          letter.innerHTML = `<div class="scene-kicker"><span class="prompt">$</span> response_received.exe</div><h2 class="type-cursor">Best. Reply. Ever. ❤️</h2><p class="subline">Status updated: <strong>two hearts, one very happy hacker.</strong><br>Welcome to the next chapter, Lisa.</p><div class="actions"><button class="primary" id="celebrate">Send a kiss 💌</button></div><div class="tiny-note">connection: <span>permanently secured</span> // love you</div>`;
+          document.getElementById('celebrate').addEventListener('click', () => {
+            const message = encodeURIComponent('Sending you a kiss, Lisa 💋❤️');
+            window.open(`https://wa.me/60102181894?text=${message}`, '_blank', 'noopener,noreferrer');
+            showToast('opening our private WhatsApp channel ✦');
+          });
+          showToast('response received ✦');
+        }, 330);
+      });
+      document.getElementById('thinkFinal')?.addEventListener('click', () => showToast('take all the time you need 🤍'));
+    }
+
+    showPage(currentPage);
+  </script>
+</body>
+</html>
